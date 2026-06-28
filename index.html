@@ -117,47 +117,76 @@ Certificate Not Found
 
 
 </script>
-<!DOCTYPE html>
-<html>
-<body>
-
-<h1>Certificate Verification</h1>
-
-<div id="result"></div>
-
 <script>
 
-const id = new URLSearchParams(location.search).get("id");
+const params = new URLSearchParams(window.location.search);
+
+const cert = params.get("id");
+
 
 fetch("certificates.json")
-.then(r=>r.json())
-.then(data=>{
 
-if(data[id]){
+.then(response => response.json())
 
-document.getElementById("result").innerHTML =
-`
-<h2>${data[id].name}</h2>
-<p>Certificate Number: ${id}</p>
-<p>Grade: ${data[id].grade}</p>
-<p>Status: ${data[id].status}</p>
+.then(data => {
+
+
+const certificates = data["Certificate Details with Grade"];
+
+
+const result = certificates.find(
+item => item["Certificate Number"] === cert
+);
+
+
+
+if(result){
+
+
+document.getElementById("result").innerHTML = `
+
+<h2>${result["Name"]}</h2>
+
+<p>
+Certificate Number:
+<br>
+<b>${result["Certificate Number"]}</b>
+</p>
+
+
+<p>
+Grade:
+<b>${result["Grade"]}</b>
+</p>
+
+
+<p class="valid">
+✓ Certificate Verified
+</p>
+
 `;
 
 }
 
+
 else{
 
-document.getElementById("result").innerHTML =
-"Certificate not found";
+
+document.getElementById("result").innerHTML = `
+
+<p class="invalid">
+Certificate Not Found
+</p>
+
+`;
 
 }
 
+
 });
 
-</script>
 
-</body>
-</html>
+</script>
 
 </body>
 </html>
